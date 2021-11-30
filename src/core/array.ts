@@ -1,9 +1,9 @@
-import { printConsoleError } from './helper';
+import { printConsoleError } from '../helper';
 
 export const ArrayUtil = {
   getLength: (inputArray: any[]) => {
     if (!Array.isArray(inputArray)) {
-      printConsoleError('getLength', { inputArray });
+      printConsoleError('ArrayUtil - getLength', { inputArray });
       return;
     }
 
@@ -11,7 +11,7 @@ export const ArrayUtil = {
   },
   isEmpty: (inputArray: any[]) => {
     if (!Array.isArray(inputArray)) {
-      printConsoleError('isEmptyArray', { inputArray });
+      printConsoleError('ArrayUtil - isEmpty', { inputArray });
       return;
     }
 
