@@ -51,7 +51,7 @@ export const FormatUtil = {
     },
     noCommaWithDecimal: (value: number, decimal: number = 2) => {
       if (!value) {
-        printConsoleError('FormatUtil - noCommaTwoDecimal', { value });
+        printConsoleError('FormatUtil - noCommaWithDecimal', { value });
         return;
       }
 
@@ -61,7 +61,7 @@ export const FormatUtil = {
     },
     noCommaWithDecimalPercent: (value: number, decimal: number = 2) => {
       if (!value) {
-        printConsoleError('FormatUtil - noCommaTwoDecimalPercent', { value });
+        printConsoleError('FormatUtil - noCommaWithDecimalPercent', { value });
         return;
       }
 
@@ -78,7 +78,7 @@ export const FormatUtil = {
     },
     commaWithDecimal: (value: number, decimal: number = 2) => {
       if (!value) {
-        printConsoleError('FormatUtil - commaTwoDecimal', { value });
+        printConsoleError('FormatUtil - commaWithDecimal', { value });
         return;
       }
 
@@ -88,11 +88,75 @@ export const FormatUtil = {
     },
     commaWithDecimalPercent: (value: number, decimal: number = 2) => {
       if (!value) {
-        printConsoleError('FormatUtil - commaTwoDecimalPercent', { value });
+        printConsoleError('FormatUtil - commaWithDecimalPercent', { value });
         return;
       }
 
       return FormatUtil.number.commaWithDecimal(value * 100, decimal);
+    },
+    toAlphabet: (value: number, caps: boolean) => {
+      if (!value || !caps) {
+        printConsoleError('FormatUtil - toAlphabet', { value, caps });
+        return;
+      }
+
+      const addFactor = caps ? 65 : 97;
+
+      const multiValue = Math.floor((value - 26) / 26);
+      const multiLevelAlphabet =
+        multiValue >= 0 ? String.fromCharCode(multiValue + addFactor) : '';
+
+      const alphabet = String.fromCharCode((value % 26) + addFactor);
+
+      return `${multiLevelAlphabet}${alphabet}`;
+    },
+    toRoman: (value: number, caps: boolean) => {
+      if (!value || !caps) {
+        printConsoleError('FormatUtil - toRoman', { value, caps });
+        return;
+      }
+
+      const decimal = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+      const roman = [
+        'm',
+        'cm',
+        'd',
+        'cd',
+        'c',
+        'xc',
+        'l',
+        'xl',
+        'x',
+        'ix',
+        'v',
+        'iv',
+        'i',
+      ];
+      const romanCaps = [
+        'M',
+        'CM',
+        'D',
+        'CD',
+        'C',
+        'XC',
+        'L',
+        'XL',
+        'X',
+        'IX',
+        'V',
+        'IV',
+        'I',
+      ];
+
+      let romanized = '';
+      for (let i = 0; i < decimal.length; i++) {
+        while (decimal[i] <= value) {
+          romanized += caps ? romanCaps[i] : roman[i];
+          value -= decimal[i];
+        }
+      }
+
+      return romanized;
     },
   },
   text: {

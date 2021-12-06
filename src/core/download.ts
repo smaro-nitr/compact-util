@@ -7,26 +7,35 @@ export const DownloadUtil = {
       return;
     }
 
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(data);
-    link.download = `${fileName}`;
-    link.target = '_blank';
-    link.click();
-    link.remove();
+    const temporaryAnchor = document.createElement('a');
+    temporaryAnchor.href = window.URL.createObjectURL(data);
+    temporaryAnchor.setAttribute('download', `${fileName}`);
+    temporaryAnchor.setAttribute('target', '_blank');
+    document.body.appendChild(temporaryAnchor);
+    temporaryAnchor.click();
+    document.body.removeChild(temporaryAnchor);
     return;
   },
-  downloadFile: (data: any, fileName: string, extension: string) => {
+  file: (data: any, fileName: string, extension: string) => {
+    if (!data || !fileName || !extension) {
+      printConsoleError('DownloadUtil - file', { data, fileName, extension });
+      return;
+    }
+
     const type: any = {
       csv: 'application/vnd.ms-excel',
+      pdf: 'application/pdf',
     };
 
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(
+    const temporaryAnchor = document.createElement('a');
+    temporaryAnchor.href = window.URL.createObjectURL(
       new Blob([data], { type: type[extension] })
     );
-    link.download = `${fileName}`;
-    link.target = '_blank';
-    link.click();
-    link.remove();
+    temporaryAnchor.setAttribute('download', `${fileName}.${extension}`);
+    temporaryAnchor.setAttribute('target', '_blank');
+    document.body.appendChild(temporaryAnchor);
+    temporaryAnchor.click();
+    document.body.removeChild(temporaryAnchor);
+    return;
   },
 };

@@ -2,23 +2,23 @@ import { printConsoleError } from '../helper';
 
 export const InputUtil = {
   disableButtonOnClick: (buttonId: string) => {
-    if (!buttonId) {
+    const buttonEl: any = document.getElementById(buttonId);
+    if (!buttonId || !buttonEl) {
       printConsoleError('InputUtil - disableButtonOnClick', { buttonId });
       return;
     }
 
-    const buttonEl: any = document.getElementById(buttonId);
-    if (buttonEl) buttonEl.disabled = true;
+    buttonEl.disabled = true;
     return;
   },
   enableButtonManually: (buttonId: string) => {
-    if (!buttonId) {
+    const buttonEl: any = document.getElementById(buttonId);
+    if (!buttonId || !buttonEl) {
       printConsoleError('InputUtil - enableButtonManually', { buttonId });
       return;
     }
 
-    const buttonEl: any = document.getElementById(buttonId);
-    if (buttonEl) buttonEl.disabled = false;
+    buttonEl.disabled = false;
     return;
   },
   validateEmail: (emailId: string) => {
