@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { ObjectUtil } from '..';
+import { StorageUtil } from '..';
 import { printConsoleError } from '../helper';
 
 export const ApiUtil = {
@@ -9,9 +10,55 @@ export const ApiUtil = {
     pdf: 'application/pdf',
     form: 'multipart/form-data',
   },
-  setToken: (token: any) => {
-    ApiUtil.token = token;
+  tokenExist: () => {
+    const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
+    return Boolean(authorization);
+  },
+  setToken: (token: any | string, enableLocal?: boolean) => {
+    if (enableLocal) {
+      StorageUtil.setLocalStorage(
+        'token',
+        typeof token === 'string' ? token : JSON.stringify(token)
+      );
+    } else {
+      ApiUtil.token = token;
+    }
     return;
+  },
+  destroyToken: () => {
+    StorageUtil.removeLocalStorage('token');
+    ApiUtil.token = null;
+    return;
+  },
+  setInterceptorRequest: (
+    reqDataHandler?: (config: any) => {},
+    reqErrorHandler?: (error: any) => {}
+  ) => {
+    Axios.interceptors.request.use(
+      (config: any) => {
+        if (reqDataHandler) reqDataHandler(config);
+        return config;
+      },
+      (error: any) => {
+        if (reqErrorHandler) reqErrorHandler(error);
+        return Promise.reject(error);
+      }
+    );
+  },
+  setInterceptorResponse: (
+    resDataHandler?: (response: any) => {},
+    resErrorHandler?: (error: any) => {}
+  ) => {
+    Axios.interceptors.response.use(
+      (response: any) => {
+        if (resDataHandler) resDataHandler(response);
+        return response;
+      },
+      (error: any) => {
+        if (resErrorHandler) resErrorHandler(error);
+        return Promise.reject(error);
+      }
+    );
   },
   isSuccess: (result: any) => {
     if (!result) {
@@ -25,26 +72,25 @@ export const ApiUtil = {
     const payload: any = {
       method: 'DELETE',
       url,
-      headers: {
-        authorization: ApiUtil.token,
-        'Content-Type': ApiUtil.contentType.json,
-      },
+      headers: { 'Content-Type': ApiUtil.contentType.json },
     };
+    const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
+    if (authorization) payload.headers.authorization = authorization;
     return Axios(payload);
   },
   get: (url: string, fileDownload?: boolean, disableToken?: boolean) => {
-    const authorization = ApiUtil.token;
     const payload: any = {
       method: 'GET',
       url,
       headers: {
-        authorization,
         'Content-Type': fileDownload
           ? ApiUtil.contentType.pdf
           : ApiUtil.contentType.json,
       },
     };
-    if (disableToken) delete payload.headers.authorization;
+    const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
+    if (authorization && !disableToken)
+      payload.headers.authorization = authorization;
     if (fileDownload) payload.responseType = 'arraybuffer';
     return Axios(payload);
   },
@@ -58,12 +104,11 @@ export const ApiUtil = {
       method: 'POST',
       url,
       data,
-      headers: {
-        authorization: ApiUtil.token,
-        'Content-Type': ApiUtil.contentType.json,
-      },
+      headers: { 'Content-Type': ApiUtil.contentType.json },
     };
-    if (disableToken) delete payload.headers.authorization;
+    const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
+    if (authorization && !disableToken)
+      payload.headers.authorization = authorization;
     if (multiformData)
       payload.headers['Content-Type'] = ApiUtil.contentType.form;
     return Axios(payload);
@@ -73,14 +118,13 @@ export const ApiUtil = {
       method: 'PUT',
       url,
       data,
-      headers: {
-        authorization: ApiUtil.token,
-        'Content-Type': ApiUtil.contentType.json,
-      },
+      headers: { 'Content-Type': ApiUtil.contentType.json },
     };
+    const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
+    if (authorization) payload.headers.authorization = authorization;
     return Axios(payload);
   },
-  graphQl: (url: string, query: any) => {
+  graphQl: (url: string, query: any, disableToken?: boolean) => {
     const payload: any = {
       method: 'POST',
       url,
@@ -90,11 +134,13 @@ export const ApiUtil = {
             query: query,
           }),
       headers: {
-        authorization: ApiUtil.token,
         'Content-Type': ApiUtil.contentType.json,
         Accept: ApiUtil.contentType.json,
       },
     };
+    const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
+    if (authorization) payload.headers.authorization = authorization;
+    if (disableToken) delete payload.headers.authorization;
     return Axios(payload);
   },
 };

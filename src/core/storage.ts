@@ -2,7 +2,9 @@ import { printConsoleError } from '../helper';
 import { ObjectUtil } from './object';
 
 export const StorageUtil = {
-  storageKey: {},
+  storageKey: {
+    token: 'token',
+  },
   setStorageKey: (storageKeyList: any[]) => {
     storageKeyList.forEach(storageKey => {
       if (!ObjectUtil.isObject(storageKey)) {
@@ -23,7 +25,10 @@ export const StorageUtil = {
       return;
     }
 
-    window.localStorage.setItem(key, JSON.stringify(value));
+    window.localStorage.setItem(
+      key,
+      typeof value === 'string' ? value : JSON.stringify(value)
+    );
     return value;
   },
   removeLocalStorage: (key: string) => {
@@ -43,6 +48,6 @@ export const StorageUtil = {
       return;
     }
 
-    return JSON.parse(window.localStorage.getItem(key) || '');
+    return window.localStorage.getItem(key) || '';
   },
 };

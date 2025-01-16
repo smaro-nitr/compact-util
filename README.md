@@ -1,11 +1,15 @@
-# Version 1.1.0
+# Version 2.0.0
 
 ## API UTIL
 
 - token
 - contentType | `json = application/json` | `pdf = application/pdf` | `form = multipart/form-data`
-- **setToken: (token: any)**
+- **tokenExist: ()**
+- **setToken: (token: any | string, enableLocal?: boolean)**
+- **destroyToken: ()**
 - **isSuccess: (result: any)**
+- **setInterceptorRequest: (reqDataHandler?: (config: any) => {}, reqErrorHandler?: (error: any) => {})**
+- **setInterceptorResponse: (resDataHandler?: (response: any) => {}, resErrorHandler?: (error: any) => {})**
 - **delete: (url: string)**
 - **get: (url: string, fileDownload?: boolean, disableToken?: boolean)**
 - **post: (url: string, data: any, disableToken?: boolean, multiformData?: boolean)**
