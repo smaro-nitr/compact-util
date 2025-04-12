@@ -98,30 +98,34 @@ export const ApiUtil = {
     url: string,
     data: any,
     disableToken?: boolean,
-    multiformData?: boolean
+    contentType?: boolean
   ) => {
     const payload: any = {
       method: 'POST',
       url,
       data,
-      headers: { 'Content-Type': ApiUtil.contentType.json },
+      headers: { 'Content-Type': contentType || ApiUtil.contentType.json },
     };
     const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
     if (authorization && !disableToken)
       payload.headers.authorization = authorization;
-    if (multiformData)
-      payload.headers['Content-Type'] = ApiUtil.contentType.form;
     return Axios(payload);
   },
-  put: (url: string, data: any) => {
+  put: (
+    url: string,
+    data: any,
+    disableToken?: boolean,
+    contentType?: boolean
+  ) => {
     const payload: any = {
       method: 'PUT',
       url,
       data,
-      headers: { 'Content-Type': ApiUtil.contentType.json },
+      headers: { 'Content-Type': contentType || ApiUtil.contentType.json },
     };
     const authorization = ApiUtil.token || StorageUtil.getLocalStorage('token');
-    if (authorization) payload.headers.authorization = authorization;
+    if (authorization && !disableToken)
+      payload.headers.authorization = authorization;
     return Axios(payload);
   },
   graphQl: (url: string, query: any, disableToken?: boolean) => {

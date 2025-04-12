@@ -1,4 +1,4 @@
-# Version 2.0.0
+# Version 2.0.1
 
 ## API UTIL
 
@@ -12,8 +12,8 @@
 - **setInterceptorResponse: (resDataHandler?: (response: any) => {}, resErrorHandler?: (error: any) => {})**
 - **delete: (url: string)**
 - **get: (url: string, fileDownload?: boolean, disableToken?: boolean)**
-- **post: (url: string, data: any, disableToken?: boolean, multiformData?: boolean)**
-- **put: (url: string, data: any)**
+- **post: (url: string, data: any, disableToken?: boolean, contentType?: string)**
+- **put: (url: string, data: any, disableToken?: boolean, contentType?: string)**
 - **graphQl: (url: string, query: any)**
 
 ## ARRAY UTIL
